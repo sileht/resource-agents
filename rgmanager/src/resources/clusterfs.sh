@@ -289,11 +289,6 @@ do_pre_unmount() {
 		fi
 	fi
 
-	if [ -z "$force_umount" ]; then
-		ocf_log debug "Not umounting $dev (clustered file system)"
-		return 2
-	fi
-
 	#
 	# Always do this hackery on clustered file systems.
 	#
@@ -311,6 +306,11 @@ do_pre_unmount() {
 
 	# Always invalidate buffers on clusterfs resources
 	clubufflush -f $dev
+
+	if [ -z "$force_umount" ]; then
+		ocf_log debug "Not umounting $dev (clustered file system)"
+		return 2
+	fi
 
 	return 0
 }

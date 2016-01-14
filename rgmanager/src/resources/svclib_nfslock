@@ -58,7 +58,7 @@ nfslock_statd_notify()
 	tmpdir=$(mktemp -d /tmp/statd-$2.XXXXXX)
 
 	# Ok, copy the HA directory to something we can use.
-       	mkdir -p $tmpdir/sm
+	mkdir -p $tmpdir/sm $tmpdir/sm.bak
 	
 	# Copy in our specified entries
 	cp -f $nl_dir/sm/* $tmpdir/sm
@@ -92,7 +92,7 @@ nfslock_statd_notify()
 	# sending the notifications out.
 	#
 	ocf_log info "Sending reclaim notifications via $nl_ip"
-	command="rpc.statd -NFP $tmpdir -n $nl_ip"
+	command="sm-notify -dfP $tmpdir -v $nl_ip"
 	eval $command 2>&1 &
 	sleep 3 # XXX - the instance of rpc.statd we just spawned is supposed
 	        # to exit after it finishes notifying clients.
