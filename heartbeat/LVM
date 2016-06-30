@@ -452,13 +452,12 @@ LVM_start() {
 		fi
 	fi
 
-	if LVM_status $vg; then
-		: OK Volume $vg activated just fine!
-		return $OCF_SUCCESS 
-	else
-		ocf_exit_reason "LVM: $vg did not activate correctly"
-		return $OCF_NOT_RUNNING
-	fi
+	while ! LVM_status $vg; do
+		sleep 1
+	done
+
+	ocf_log info "OK Volume $vg activated just fine!"
+	return $OCF_SUCCESS 
 }
 
 #
