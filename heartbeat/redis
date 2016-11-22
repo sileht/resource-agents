@@ -466,6 +466,7 @@ function demote() {
 	ocf_log info "demote: Setting master to '$master_host'"
 
 	redis_client slaveof "$master_host" "$master_port"
+	redis_client CLIENT KILL type normal
 
 	# Wait forever for the slave to connect to the master and finish the 
 	# sync. Timeout is controlled by Pacemaker "op start timeout=XX".
