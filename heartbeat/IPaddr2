@@ -1071,14 +1071,14 @@ meta-data)	meta_data
 usage|help)	ip_usage
 		exit $OCF_SUCCESS
 		;;
+stop)		ip_stop
+		;;
 esac
 
 ip_validate
 
 case $__OCF_ACTION in
 start)		ip_start
-		;;
-stop)		ip_stop
 		;;
 status)		ip_status=`ip_served`
 		if [ $ip_status = "ok" ]; then
