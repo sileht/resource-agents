@@ -466,7 +466,7 @@ function demote() {
 	ocf_log info "demote: Setting master to '$master_host'"
 
 	redis_client slaveof "$master_host" "$master_port"
-	redis_client CLIENT KILL type normal
+	redis_client CLIENT PAUSE 2
 
 	# Wait forever for the slave to connect to the master and finish the 
 	# sync. Timeout is controlled by Pacemaker "op start timeout=XX".
@@ -482,12 +482,14 @@ function demote() {
 		monitor
 		status=$?
 		if (( status == OCF_SUCCESS )); then
+		        redis_client CLIENT KILL type normal
 			return $OCF_SUCCESS
 		fi
-		
+		redis_client CLIENT PAUSE 2
 		sleep 1
 	done
-
+        redis_client CLIENT KILL type normal
+	
 	ocf_log err "demote: Unexpected error setting slave mode (status=$status)"
 	return $OCF_ERR_GENERIC
 }
